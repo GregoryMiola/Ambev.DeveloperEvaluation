@@ -24,15 +24,14 @@ services:
   ambev.developerevaluation.database:
     container_name: ambev_developer_evaluation_database
     image: postgres:13
-
     environment:
-      POSTGRES_DB_HOST: ambev_developer_evaluation_database
-      POSTGRES_DB_PORT: 5432
-      POSTGRES_DB: developer_evaluation
-      POSTGRES_USER: developer
-      POSTGRES_PASSWORD: ev@luAt10n
+      - POSTGRES_DB=developer_evaluation
+      - POSTGRES_USER=developer
+      - POSTGRES_PASSWORD=ev@luAt10n
     ports:
       - "5432:5432"
+    volumes:
+      - ambev-db-data:/var/lib/postgresql/data
     restart: unless-stopped
 
   ambev.developerevaluation.nosql:
@@ -53,3 +52,6 @@ services:
        MONGO_INITDB_ROOT_PASSWORD: ev@luAt10n
     ports:
        - "6379"
+
+volumes:
+  ambev-db-data:

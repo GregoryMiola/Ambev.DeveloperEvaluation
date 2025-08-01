@@ -64,13 +64,14 @@ public class UserRepository : IUserRepository
     /// <returns>True if the user was deleted, false if not found</returns>
     public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var user = await GetByIdAsync(id, cancellationToken);
-        if (user == null)
-            return false;
-
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
+        // This approach avoids fetching the entity from the database before deleting it,
+        // resulting in a single database command.
+        var userToDelete = new User { Id = id };
+        _context.Entry(userToDelete).State = EntityState.Deleted;
+        
+        var affectedRows = await _context.SaveChangesAsync(cancellationToken);
+        
+        return affectedRows > 0;
     }
 
     /// <summary>
