@@ -5,9 +5,11 @@ using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Users.CreateUser;
 using Ambev.DeveloperEvaluation.WebApi.Features.Users.GetUser;
 using Ambev.DeveloperEvaluation.WebApi.Features.Users.DeleteUser;
+using Ambev.DeveloperEvaluation.WebApi.Features.Users.GetUsers;
 using Ambev.DeveloperEvaluation.Application.Users.CreateUser;
 using Ambev.DeveloperEvaluation.Application.Users.GetUser;
 using Ambev.DeveloperEvaluation.Application.Users.DeleteUser;
+using Ambev.DeveloperEvaluation.Application.Users.GetUsers;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Users;
 
@@ -79,7 +81,7 @@ public class UsersController : BaseController
         if (!validationResult.IsValid)
             return BadRequest(validationResult.Errors);
 
-        var command = _mapper.Map<GetUserCommand>(request.Id);
+        var command = _mapper.Map<GetUserCommand>(request);
         var response = await _mediator.Send(command, cancellationToken);
 
         return Ok(new ApiResponseWithData<GetUserResponse>
@@ -109,13 +111,34 @@ public class UsersController : BaseController
         if (!validationResult.IsValid)
             return BadRequest(validationResult.Errors);
 
-        var command = _mapper.Map<DeleteUserCommand>(request.Id);
+        var command = _mapper.Map<DeleteUserCommand>(request);
         await _mediator.Send(command, cancellationToken);
 
         return Ok(new ApiResponse
         {
             Success = true,
             Message = "User deleted successfully"
+        });
+    }
+    
+    /// <summary>
+    /// Retrieves a list of users
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The list of users if found</returns>
+    [HttpGet()]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new GetUsersCommand(), cancellationToken);
+
+        return Ok(new ApiResponseWithData<List<GetUsersResponse>>
+        {
+            Success = true,
+            Message = "User retrieved successfully",
+            Data = _mapper.Map<List<GetUsersResponse>>(response)
         });
     }
 }
