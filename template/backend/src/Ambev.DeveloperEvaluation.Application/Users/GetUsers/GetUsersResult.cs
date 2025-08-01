@@ -16,4 +16,9 @@ public class GetUsersResult
     /// The user's email address
     /// </summary>
     public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The user's ID 
+    /// </summary>
+    public Guid Id { get; set; } = Guid.Empty;
 }
