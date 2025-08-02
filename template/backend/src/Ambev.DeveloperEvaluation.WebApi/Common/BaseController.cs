@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿﻿using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Common;
@@ -7,11 +7,24 @@ namespace Ambev.DeveloperEvaluation.WebApi.Common;
 [ApiController]
 public class BaseController : ControllerBase
 {
-    protected int GetCurrentUserId() =>
-            int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new NullReferenceException());
+    protected Guid? GetCurrentUserId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-    protected string GetCurrentUserEmail() =>
-        User.FindFirst(ClaimTypes.Email)?.Value ?? throw new NullReferenceException();
+        if (Guid.TryParse(userIdClaim, out var userId))
+        {
+            return userId;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the current user's email from the claims.
+    /// </summary>
+    /// <returns>The user's email if the claim exists; otherwise, null.</returns>
+    protected string? GetCurrentUserEmail() =>
+        User.FindFirst(ClaimTypes.Email)?.Value;
 
     protected IActionResult Ok<T>(T data) =>
             base.Ok(new ApiResponseWithData<T> { Data = data, Success = true });
