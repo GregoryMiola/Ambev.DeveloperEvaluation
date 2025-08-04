@@ -3,12 +3,13 @@ using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Interfaces;
+using Ambev.DeveloperEvaluation.Common.Models;
 using AutoMapper;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Commands.Sales.GetSales;
 
-public class GetSalesCommandHandler : IRequestHandler<GetSalesCommand, IEnumerable<SaleResponse>>
+public class GetSalesCommandHandler : IRequestHandler<GetSalesCommand, PaginatedList<SaleResponse>>
 {
     private readonly ISaleRepository _saleRepository;
     private readonly IMapper _mapper;
@@ -19,9 +20,11 @@ public class GetSalesCommandHandler : IRequestHandler<GetSalesCommand, IEnumerab
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<SaleResponse>> Handle(GetSalesCommand request, CancellationToken cancellationToken)
+    public async Task<PaginatedList<SaleResponse>> Handle(GetSalesCommand request, CancellationToken cancellationToken)
     {
-        var sales = await _saleRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<SaleResponse>>(sales);
+        var paginatedSales = await _saleRepository.GetAllPaginatedAsync(request.PageNumber, request.PageSize);
+        var mappedItems = _mapper.Map<List<SaleResponse>>(paginatedSales);
+
+        return new PaginatedList<SaleResponse>(mappedItems, paginatedSales.TotalCount, paginatedSales.CurrentPage, paginatedSales.PageSize);
     }
 }

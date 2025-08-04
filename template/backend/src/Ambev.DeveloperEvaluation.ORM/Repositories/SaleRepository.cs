@@ -1,7 +1,7 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Interfaces;
+using Ambev.DeveloperEvaluation.Common.Models;
 using Microsoft.EntityFrameworkCore; 
-
 
 namespace Ambev.DeveloperEvaluation.ORM.Repositories;
 
@@ -22,8 +22,6 @@ public class SaleRepository : ISaleRepository
 
     public async Task<Sale?> GetByIdAsync(Guid id)
     {
-        // Trocamos FindAsync por FirstOrDefaultAsync para podermos usar o .Include()
-        // e carregar os itens relacionados.
         return await _context.Sales
                              .Include(s => s.Items)
                              .FirstOrDefaultAsync(s => s.Id == id);
@@ -31,9 +29,17 @@ public class SaleRepository : ISaleRepository
 
     public async Task<IEnumerable<Sale>> GetAllAsync()
     {
-        // Adicionamos .Include() para garantir que todas as vendas na lista
-        // venham com seus respectivos itens.
         return await _context.Sales.Include(s => s.Items).ToListAsync();
+    }
+
+    public async Task<PaginatedList<Sale>> GetAllPaginatedAsync(int pageNumber, int pageSize)
+    {
+        var query = _context.Sales
+                            .Include(s => s.Items)
+                            .OrderByDescending(s => s.SaleDate)
+                            .AsNoTracking();
+                            
+        return await PaginatedList<Sale>.CreateAsync(query, pageNumber, pageSize);
     }
 
     public async Task UpdateAsync(Sale sale)

@@ -16,7 +16,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
 /// Controller para gerenciar as operações de Venda
 /// </summary>
 [ApiController]
-[Route("api/Sales")] // Rota explícita e versionada
+[Route("api/Sales")]
 public class SalesController : BaseController
 {
     private readonly ILogger<SalesController> _logger;
@@ -56,7 +56,7 @@ public class SalesController : BaseController
         }
     }
     
-    [HttpGet("{id:guid}", Name = "GetSaleById")] // Adicionando um nome à rota
+    [HttpGet("{id:guid}", Name = "GetSaleById")]
     [ProducesResponseType(typeof(ApiResponseWithData<SaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
@@ -82,13 +82,13 @@ public class SalesController : BaseController
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponseWithData<IEnumerable<SaleResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]   
-    public async Task<IActionResult> GetAllSales()
+    public async Task<IActionResult> GetAllSales([FromQuery] GetSalesCommand command)
     {
         try
         {
-            var sales = await _mediator.Send(new GetSalesCommand());
+            var sales = await _mediator.Send(command);
             
-            return Ok(sales);
+            return OkPaginated(sales);
         }
         catch (Exception ex)
         {
@@ -105,8 +105,6 @@ public class SalesController : BaseController
     {
         try
         {
-            // O serviço já lança uma DomainException se a venda não for encontrada,
-            // que será capturada pelo bloco catch. Não precisamos verificar aqui.            
             await _mediator.Send(new CancelSaleCommand(id));
             _logger.LogInformation($"Venda cancelada com sucesso. SaleId: {id}");
             
@@ -131,9 +129,8 @@ public class SalesController : BaseController
     {
         try
         {
-            // O serviço já lança uma DomainException se a venda/item não for encontrado.
             await _mediator.Send(new CancelSaleItemCommand(saleId, itemId));
-            _logger.LogInformation($"Item removido da venda com sucesso. SaleId: {SaleId}, ItemId: {ItemId}");
+            _logger.LogInformation($"Item removido da venda com sucesso. SaleId: {saleId}, ItemId: {itemId}");
             
             return Ok("Item removido da venda com sucesso.");
         }
