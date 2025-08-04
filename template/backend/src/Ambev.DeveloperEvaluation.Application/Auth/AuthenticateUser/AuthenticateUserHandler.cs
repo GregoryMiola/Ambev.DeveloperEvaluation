@@ -19,7 +19,7 @@ namespace Ambev.DeveloperEvaluation.Application.Auth.AuthenticateUser
             _jwtTokenGenerator = jwtTokenGenerator;
         }
 
-        public async Task<AuthenticateUserResult> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
+        public Task<AuthenticateUserResult> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
         {
             // var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
             
@@ -36,13 +36,13 @@ namespace Ambev.DeveloperEvaluation.Application.Auth.AuthenticateUser
 
             // var token = _jwtTokenGenerator.GenerateToken(user);
 
-            return new AuthenticateUserResult
+            return Task.FromResult(new AuthenticateUserResult
             {
                 Token = string.Empty, // token,
                 // Email = user.Email,
                 // Name = user.Username,
                 // Role = user.Role.ToString()
-            };
+            });
         }
     }
 }

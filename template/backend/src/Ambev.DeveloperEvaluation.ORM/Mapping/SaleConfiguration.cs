@@ -15,7 +15,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.HasIndex(s => s.SaleNumber).IsUnique();
             builder.Property(s => s.CustomerId).IsRequired();
             builder.Property(s => s.CustomerName).IsRequired().HasMaxLength(200);
-            builder.Property(s => s.BranchName).IsRequired().HasMaxLength(200);
+            builder.Property(s => s.BranchId).IsRequired();
             
             builder.HasMany(s => s.Items)
                    .WithOne(i => i.Sale)

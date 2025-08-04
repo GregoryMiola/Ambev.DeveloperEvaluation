@@ -1,4 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.WebApi.Features.Users.CreateUser;
+﻿
 using AutoMapper;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Mappings;

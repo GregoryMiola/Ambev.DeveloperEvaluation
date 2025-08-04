@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Common;
+using Ambev.DeveloperEvaluation.Domain.Exceptions;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities
 {
@@ -10,41 +11,84 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// <summary>
         /// Gets the user-facing sale number.
         /// </summary>
-        public int SaleNumber { get; private set; }
+        public string SaleNumber { get; private set; } = string.Empty;
 
         /// <summary>
         /// Gets the date and time the sale was made.
         /// </summary>
         public DateTime SaleDate { get; private set; }
 
-        /// <summary>
-        /// Gets the external identifier for the customer.
-        /// </summary>
         public Guid CustomerId { get; private set; }
-
-        /// <summary>
-        /// Gets the denormalized customer name at the time of sale.
-        /// </summary>
         public string CustomerName { get; private set; } = string.Empty;
 
-        /// <summary>
-        /// Gets the name of the branch where the sale occurred.
-        /// </summary>
-        public string BranchName { get; private set; } = string.Empty;
+        public Guid BranchId { get; private set; }
 
-        /// <summary>
-        /// Gets the total amount of the sale, including all items and discounts.
-        /// </summary>
         public decimal TotalAmount { get; private set; }
 
-        /// <summary>
-        /// Indicates whether the sale has been cancelled.
-        /// </summary>
         public bool IsCancelled { get; private set; }
 
-        /// <summary>
-        /// Represents the collection of items in the sale.
-        /// </summary>
-        public ICollection<SaleItem> Items { get; private set; } = [];
+        private readonly List<SaleItem> _items = new();
+        public IReadOnlyCollection<SaleItem> Items => _items.AsReadOnly();
+
+        // Private constructor for EF Core
+        private Sale() { }
+
+        public static Sale Create(Guid customerId, string customerName, Guid branchId)
+        {
+            return new Sale
+            {
+                Id = Guid.NewGuid(),
+                SaleNumber = $"SALE-{DateTime.UtcNow:yyyyMMddHHmmssfff}",
+                SaleDate = DateTime.UtcNow,
+                IsCancelled = false,
+                CustomerId = customerId,
+                CustomerName = customerName, // Denormalized
+                BranchId = branchId
+            };
+        }
+
+        public void AddItem(Product product, int quantity)
+        {
+            var newItem = SaleItem.Create(this.Id, product, quantity);
+            _items.Add(newItem);
+            RecalculateTotal();
+        }
+
+        private void RecalculateTotal()
+        {
+            TotalAmount = _items.Where(i => !i.IsCancelled).Sum(item => item.TotalItemAmount);
+        }
+
+        public void RemoveItem(Guid itemId)
+        {
+            if (IsCancelled)
+            {
+                throw new DomainException("Não é possível remover itens de uma venda cancelada.");
+            }
+
+            var item = _items.FirstOrDefault(i => i.Id == itemId);
+            if (item == null) throw new DomainException($"Item com ID {itemId} não encontrado nesta venda.");
+
+            item.Cancel();
+            RecalculateTotal();
+        }
+
+        public void Cancel()
+        {
+            if (IsCancelled)
+            {
+                throw new DomainException("A venda já está cancelada.");
+            }
+
+            IsCancelled = true;
+            foreach (var item in _items)
+            {
+                if (!item.IsCancelled)
+                {
+                    item.Cancel();
+                }
+            }
+            RecalculateTotal();
+        }
     }
 }
