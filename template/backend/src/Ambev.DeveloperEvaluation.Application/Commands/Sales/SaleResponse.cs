@@ -11,17 +11,4 @@ public class SaleResponse
     public decimal TotalAmount { get; set; }
     public bool IsCancelled { get; set; }
     public List<SaleItemResponse> Items { get; set; } = new();
-
-    public static SaleResponse FromSale(Sale sale)
-    {
-        return new SaleResponse
-        {
-            Id = sale.Id,
-            SaleNumber = sale.SaleNumber, 
-            Date = sale.SaleDate,
-            TotalAmount = sale.TotalAmount,
-            IsCancelled = sale.IsCancelled,
-            Items = sale.Items.Select(SaleItemResponse.FromSaleItem).ToList()
-        };
-    }
 }

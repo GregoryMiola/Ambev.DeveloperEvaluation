@@ -15,6 +15,8 @@ public class SaleMappingProfile : Profile
         CreateMap<SaleItem, SaleItemResponse>()
             .ForMember(dest => dest.Discount, opt => opt.MapFrom(
                 src => src.UnitPrice * src.Quantity * (src.DiscountPercentage / 100m)
-            ));
+            ))
+            // Adicionando a regra de mapeamento que faltava
+            .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalItemAmount));
     }
 }

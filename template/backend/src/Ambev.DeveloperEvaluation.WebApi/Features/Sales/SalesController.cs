@@ -40,7 +40,8 @@ public class SalesController : BaseController
         try
         {
             var saleResponse = await _mediator.Send(command);
-            // Usando o helper do BaseController para retornar 201 Created com o location header correto.
+            _logger.LogInformation($"Venda criada com sucesso. SaleId: {saleResponse.Id}");
+            
             return Created(nameof(GetSaleById), new { id = saleResponse.Id }, saleResponse);
         }
         catch (DomainException ex)
@@ -68,7 +69,7 @@ public class SalesController : BaseController
             {
                 return NotFound("Venda não encontrada.");
             }
-            // Passando apenas os dados para o helper Ok, que fará o encapsulamento.
+
             return Ok(saleResponse);
         }
         catch (Exception ex)
@@ -86,7 +87,7 @@ public class SalesController : BaseController
         try
         {
             var sales = await _mediator.Send(new GetSalesCommand());
-            // Passando apenas os dados para o helper Ok.
+            
             return Ok(sales);
         }
         catch (Exception ex)
@@ -107,6 +108,8 @@ public class SalesController : BaseController
             // O serviço já lança uma DomainException se a venda não for encontrada,
             // que será capturada pelo bloco catch. Não precisamos verificar aqui.            
             await _mediator.Send(new CancelSaleCommand(id));
+            _logger.LogInformation($"Venda cancelada com sucesso. SaleId: {id}");
+            
             return Ok("Venda cancelada com sucesso.");
         }
         catch (DomainException ex)
@@ -130,6 +133,8 @@ public class SalesController : BaseController
         {
             // O serviço já lança uma DomainException se a venda/item não for encontrado.
             await _mediator.Send(new CancelSaleItemCommand(saleId, itemId));
+            _logger.LogInformation($"Item removido da venda com sucesso. SaleId: {SaleId}, ItemId: {ItemId}");
+            
             return Ok("Item removido da venda com sucesso.");
         }
         catch (DomainException ex)
