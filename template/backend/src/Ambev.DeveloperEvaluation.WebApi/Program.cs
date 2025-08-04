@@ -29,6 +29,16 @@ public class Program
             builder.AddBasicHealthChecks();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("DevelopmentCorsPolicy", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddDbContext<DefaultContext>(options =>
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -62,6 +72,8 @@ public class Program
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("DevelopmentCorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();
