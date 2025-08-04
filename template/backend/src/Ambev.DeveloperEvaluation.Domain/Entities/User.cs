@@ -17,43 +17,43 @@ public class User : BaseEntity, IUser
     /// Gets the user's full name.
     /// Must not be null or empty and should contain both first and last names.
     /// </summary>
-    public string Username { get; set; } = string.Empty;
+    public string Username { get; private set; } = string.Empty;
 
     /// <summary>
     /// Gets the user's email address.
     /// Must be a valid email format and is used as a unique identifier for authentication.
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    public string Email { get; private set; } = string.Empty;
 
     /// <summary>
     /// Gets the user's phone number.
     /// Must be a valid phone number format following the pattern (XX) XXXXX-XXXX.
     /// </summary>
-    public string Phone { get; set; } = string.Empty ;
+    public string Phone { get; private set; } = string.Empty ;
 
     /// <summary>
     /// Gets the hashed password for authentication.
     /// Password must meet security requirements: minimum 8 characters, at least one uppercase letter,
     /// one lowercase letter, one number, and one special character.
     /// </summary>
-    public string Password { get; set; } = string.Empty;
+    public string Password { get; private set; } = string.Empty;
 
     /// <summary>
     /// Gets the user's role in the system.
     /// Determines the user's permissions and access levels.
     /// </summary>
-    public UserRole Role { get;     set; }
+    public UserRole Role { get; private set; }
 
     /// <summary>
     /// Gets the user's current status.
     /// Indicates whether the user is active, inactive, or blocked in the system.
     /// </summary>
-    public UserStatus Status { get; set; }
+    public UserStatus Status { get; private set; }
 
     /// <summary>
     /// Gets the date and time when the user was created.
     /// </summary>
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; private set; }
 
     /// <summary>
     /// Gets the date and time of the last update to the user's information.
@@ -112,6 +112,16 @@ public class User : BaseEntity, IUser
             IsValid = result.IsValid,
             Errors = result.Errors.Select(o => (ValidationErrorDetail)o)
         };
+    }
+
+    /// <summary>
+    /// Sets the user's password. This method should be used instead of direct assignment
+    /// to allow for internal logic like hashing or validation.
+    /// </summary>
+    /// <param name="password">The new password.</param>
+    public void SetPassword(string password)
+    {
+        Password = password;
     }
 
     /// <summary>

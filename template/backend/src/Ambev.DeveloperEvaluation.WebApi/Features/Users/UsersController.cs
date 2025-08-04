@@ -122,7 +122,7 @@ public class UsersController : BaseController
     }
     
     /// <summary>
-    /// Retrieves a list of users
+    /// Retrieve a list of all users
     /// </summary>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The list of users if found</returns>
