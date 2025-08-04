@@ -1,7 +1,13 @@
 ﻿﻿using Ambev.DeveloperEvaluation.Application.Commands.Sales;
+using Ambev.DeveloperEvaluation.Application.Commands.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Commands.Sales.GetSale;
+using Ambev.DeveloperEvaluation.Application.Commands.Sales.GetSales;
+using Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSale;
+using Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSaleItem;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.WebApi.Common;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
@@ -10,19 +16,19 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
 /// Controller para gerenciar as operações de Venda
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/Sales")] // Rota explícita e versionada
 public class SalesController : BaseController
 {
-    private readonly ISaleService _saleService;
     private readonly ILogger<SalesController> _logger;
+    private readonly IMediator _mediator;
 
     /// <summary>
     /// Initializes a new instance of SalesController
     /// </summary>
-    public SalesController(ISaleService saleService, ILogger<SalesController> logger)
+    public SalesController(ILogger<SalesController> logger, IMediator mediator)
     {
-        _saleService = saleService;
         _logger = logger;
+        _mediator = mediator;
     }
 
     [HttpPost]
@@ -33,7 +39,7 @@ public class SalesController : BaseController
     {
         try
         {
-            var saleResponse = await _saleService.CreateSaleAsync(command);
+            var saleResponse = await _mediator.Send(command);
             // Usando o helper do BaseController para retornar 201 Created com o location header correto.
             return Created(nameof(GetSaleById), new { id = saleResponse.Id }, saleResponse);
         }
@@ -49,7 +55,7 @@ public class SalesController : BaseController
         }
     }
     
-    [HttpGet("{id:guid}")]
+    [HttpGet("{id:guid}", Name = "GetSaleById")] // Adicionando um nome à rota
     [ProducesResponseType(typeof(ApiResponseWithData<SaleResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
@@ -57,7 +63,7 @@ public class SalesController : BaseController
     {  
         try
         {
-            var saleResponse = await _saleService.GetSaleByIdAsync(id);
+            var saleResponse = await _mediator.Send(new GetSaleCommand(id));
             if (saleResponse == null)
             {
                 return NotFound("Venda não encontrada.");
@@ -79,7 +85,7 @@ public class SalesController : BaseController
     {
         try
         {
-            var sales = await _saleService.GetAllSalesAsync();
+            var sales = await _mediator.Send(new GetSalesCommand());
             // Passando apenas os dados para o helper Ok.
             return Ok(sales);
         }
@@ -99,8 +105,8 @@ public class SalesController : BaseController
         try
         {
             // O serviço já lança uma DomainException se a venda não for encontrada,
-            // que será capturada pelo bloco catch. Não precisamos verificar aqui.
-            await _saleService.CancelSaleAsync(id);
+            // que será capturada pelo bloco catch. Não precisamos verificar aqui.            
+            await _mediator.Send(new CancelSaleCommand(id));
             return Ok("Venda cancelada com sucesso.");
         }
         catch (DomainException ex)
@@ -123,7 +129,7 @@ public class SalesController : BaseController
         try
         {
             // O serviço já lança uma DomainException se a venda/item não for encontrado.
-            await _saleService.RemoveItemFromSaleAsync(saleId, itemId);
+            await _mediator.Send(new CancelSaleItemCommand(saleId, itemId));
             return Ok("Item removido da venda com sucesso.");
         }
         catch (DomainException ex)

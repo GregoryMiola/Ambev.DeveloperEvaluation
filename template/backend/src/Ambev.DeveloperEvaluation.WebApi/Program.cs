@@ -1,11 +1,7 @@
 using Ambev.DeveloperEvaluation.Application;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
-using Ambev.DeveloperEvaluation.Application.Services;
 using Ambev.DeveloperEvaluation.Common.HealthChecks;
 using Ambev.DeveloperEvaluation.Common.Logging;
-using Ambev.DeveloperEvaluation.Common.Security;
-using Ambev.DeveloperEvaluation.Common.Validation;
-using Ambev.DeveloperEvaluation.Domain.Interfaces;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
 using Ambev.DeveloperEvaluation.Mocks.Repositories;
@@ -50,8 +46,6 @@ public class Program
                 )
             );
 
-            builder.Services.AddJwtAuthentication(builder.Configuration);
-
             builder.RegisterDependencies();
 
             builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(ApplicationLayer).Assembly);
@@ -64,17 +58,10 @@ public class Program
                 );
             });
 
-            builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
             // Register the mock repositories as singletons.
             // This ensures the same in-memory list is used throughout the application's lifetime.
             builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
             builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
-            
-            // Para o desafio, vamos usar um repositório de vendas em memória também.
-            // Em um cenário real, isso seria uma implementação que usa o DefaultContext (EF Core).
-            // builder.Services.AddScoped<ISaleRepository, SaleRepository>(); 
-            builder.Services.AddScoped<ISaleService, SaleService>();
 
             var app = builder.Build();
             app.UseMiddleware<ValidationExceptionMiddleware>();

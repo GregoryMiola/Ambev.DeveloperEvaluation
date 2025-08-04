@@ -1,4 +1,4 @@
-﻿
+﻿﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -8,8 +8,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambev.DeveloperEvaluation.Common", "Ambev.DeveloperEvaluation.Common\Ambev.DeveloperEvaluation.Common.csproj", "{1C348C58-9198-4E51-ADF1-43D96420775C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambev.DeveloperEvaluation.Domain", "Ambev.DeveloperEvaluation.Domain\Ambev.DeveloperEvaluation.Domain.csproj", "{5043F93D-F2D3-4D3B-BFA5-B269B66D9A57}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambev.DeveloperEvaluation.Infrastructure", "Ambev.DeveloperEvaluation.Infrastructure\Ambev.DeveloperEvaluation.Infrastructure.csproj", "{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambev.DeveloperEvaluation.IoC", "Ambev.DeveloperEvaluation.IoC\Ambev.DeveloperEvaluation.IoC.csproj", "{26AD525F-97DD-498A-B2E8-69FBF27E795C}"
 EndProject
@@ -65,18 +63,6 @@ Global
 		{5043F93D-F2D3-4D3B-BFA5-B269B66D9A57}.Release|x64.Build.0 = Release|Any CPU
 		{5043F93D-F2D3-4D3B-BFA5-B269B66D9A57}.Release|x86.ActiveCfg = Release|Any CPU
 		{5043F93D-F2D3-4D3B-BFA5-B269B66D9A57}.Release|x86.Build.0 = Release|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Debug|x64.Build.0 = Debug|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Debug|x86.Build.0 = Debug|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Release|x64.ActiveCfg = Release|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Release|x64.Build.0 = Release|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Release|x86.ActiveCfg = Release|Any CPU
-		{2F65AFDB-0BDD-4E94-9FEF-9015078C40A5}.Release|x86.Build.0 = Release|Any CPU
 		{26AD525F-97DD-498A-B2E8-69FBF27E795C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26AD525F-97DD-498A-B2E8-69FBF27E795C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26AD525F-97DD-498A-B2E8-69FBF27E795C}.Debug|x64.ActiveCfg = Debug|Any CPU
