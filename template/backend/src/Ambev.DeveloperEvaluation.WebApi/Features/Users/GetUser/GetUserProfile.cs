@@ -12,12 +12,12 @@ public class GetUserProfile : Profile
     /// </summary>
     public GetUserProfile()
     {
-        CreateMap<Guid, Application.Users.GetUser.GetUserCommand>()
-            .ConstructUsing(id => new Application.Users.GetUser.GetUserCommand(id));
+        // CreateMap<Guid, Application.Users.GetUser.GetUserCommand>()
+        //     .ConstructUsing(id => new Application.Users.GetUser.GetUserCommand(id));
 
-        CreateMap<GetUserRequest, Application.Users.GetUser.GetUserCommand>()
-            .ConstructUsing(req => new Application.Users.GetUser.GetUserCommand(req.Id));
+        // CreateMap<GetUserRequest, Application.Users.GetUser.GetUserCommand>()
+        //     .ConstructUsing(req => new Application.Users.GetUser.GetUserCommand(req.Id));
 
-        CreateMap<Application.Users.GetUser.GetUserResult, GetUserResponse>();
+        // CreateMap<Application.Users.GetUser.GetUserResult, GetUserResponse>();
     }
 }
