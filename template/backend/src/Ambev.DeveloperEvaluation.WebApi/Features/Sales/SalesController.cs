@@ -16,7 +16,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales;
 /// Controller para gerenciar as operações de Venda
 /// </summary>
 [ApiController]
-[Route("api/Sales")]
+[Route("api/v1/sales")]
 public class SalesController : BaseController
 {
     private readonly ILogger<SalesController> _logger;
