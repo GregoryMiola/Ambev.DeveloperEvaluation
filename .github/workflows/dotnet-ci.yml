@@ -3,10 +3,10 @@ name: .NET Backend CI
 on:
   # Dispara a pipeline em pushes para as branches dev e main
   push:
-    branches: [ "main", "dev" ]
+    branches: [ "main" ]
   # Dispara a pipeline em Pull Requests que têm como alvo as branches dev e main
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: [ "main" ]
 
 jobs:
   build-and-test:
