@@ -1,0 +1,45 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (API Principal)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/template/backend/src/Ambev.DeveloperEvaluation.WebApi/bin/Debug/net8.0/Ambev.DeveloperEvaluation.WebApi.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/template/backend/src/Ambev.DeveloperEvaluation.WebApi",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(http://\\S+)"
+
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Launch (API de Mock)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/template/backend/src/Ambev.DeveloperEvaluation.Mocks/bin/Debug/net8.0/Ambev.DeveloperEvaluation.Mocks.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/template/backend/src/Ambev.DeveloperEvaluation.Mocks",
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch API Principal + Mock",
+            "configurations": [".NET Core Launch (API Principal)", ".NET Core Launch (API de Mock)"]
+        }
+    ]
+}

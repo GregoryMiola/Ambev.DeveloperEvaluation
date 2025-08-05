@@ -1,10 +1,10 @@
 using Ambev.DeveloperEvaluation.Application;
+using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Common.HealthChecks;
 using Ambev.DeveloperEvaluation.Common.Logging;
-using Ambev.DeveloperEvaluation.Common.Security;
-using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
+using Ambev.DeveloperEvaluation.Mocks.Repositories;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,14 +29,22 @@ public class Program
             builder.AddBasicHealthChecks();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("DevelopmentCorsPolicy", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddDbContext<DefaultContext>(options =>
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("Ambev.DeveloperEvaluation.ORM")
                 )
             );
-
-            builder.Services.AddJwtAuthentication(builder.Configuration);
 
             builder.RegisterDependencies();
 
@@ -50,7 +58,10 @@ public class Program
                 );
             });
 
-            builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            // Register the mock repositories as singletons.
+            // This ensures the same in-memory list is used throughout the application's lifetime.
+            builder.Services.AddSingleton<IProductRepository, InMemoryProductRepository>();
+            builder.Services.AddSingleton<IUserRepository, InMemoryUserRepository>();
 
             var app = builder.Build();
             app.UseMiddleware<ValidationExceptionMiddleware>();
@@ -62,6 +73,8 @@ public class Program
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors("DevelopmentCorsPolicy");
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -1,5 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Common.Validation;
-using Ambev.DeveloperEvaluation.WebApi.Common;
+﻿using Ambev.DeveloperEvaluation.WebApi.Common;
 using FluentValidation;
 using System.Text.Json;
 
@@ -36,7 +35,11 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
                 Success = false,
                 Message = "Validation Failed",
                 Errors = exception.Errors
-                    .Select(error => (ValidationErrorDetail)error)
+                    .Select(error => new ApiValidationError
+                    {
+                        PropertyName = error.PropertyName,
+                        ErrorMessage = error.ErrorMessage
+                    })
             };
 
             var jsonOptions = new JsonSerializerOptions
