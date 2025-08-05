@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using Ambev.DeveloperEvaluation.Application.Commands.SaleItems;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Dtos;
 using Ambev.DeveloperEvaluation.Mocks.Repositories;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using FluentAssertions;
@@ -30,7 +31,7 @@ public class SalesEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         var command = new CreateSaleCommand(
             existingUser.Id,
             Guid.NewGuid(), // BranchId pode ser qualquer um
-            new List<SaleItemCommand> { new() { ProductId = existingProduct.Id, Quantity = 5 } }
+            new List<SaleItemCommand> { new SaleItemCommand(existingProduct.Id, 5) }
         );
 
         // Act

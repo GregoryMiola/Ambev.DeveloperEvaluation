@@ -40,7 +40,6 @@ public class SalesController : BaseController
         try
         {
             var saleResponse = await _mediator.Send(command);
-            _logger.LogInformation($"Venda criada com sucesso. SaleId: {saleResponse.Id}");
             
             return Created(nameof(GetSaleById), new { id = saleResponse.Id }, saleResponse);
         }
@@ -106,7 +105,6 @@ public class SalesController : BaseController
         try
         {
             await _mediator.Send(new CancelSaleCommand(id));
-            _logger.LogInformation($"Venda cancelada com sucesso. SaleId: {id}");
             
             return Ok("Venda cancelada com sucesso.");
         }
@@ -130,7 +128,6 @@ public class SalesController : BaseController
         try
         {
             await _mediator.Send(new CancelSaleItemCommand(saleId, itemId));
-            _logger.LogInformation($"Item removido da venda com sucesso. SaleId: {saleId}, ItemId: {itemId}");
             
             return Ok("Item removido da venda com sucesso.");
         }

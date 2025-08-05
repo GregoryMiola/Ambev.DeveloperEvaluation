@@ -11,12 +11,12 @@ namespace Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSale;
 public class CancelSaleCommandHandler : IRequestHandler<CancelSaleCommand>
 {
     private readonly ISaleRepository _saleRepository;
-    private readonly IMapper _mapper;
+    private readonly IEventPublisher _eventPublisher;
 
-    public CancelSaleCommandHandler(ISaleRepository saleRepository, IMapper mapper)
+    public CancelSaleCommandHandler(ISaleRepository saleRepository, IEventPublisher eventPublisher)
     {
         _saleRepository = saleRepository;
-        _mapper = mapper;
+        _eventPublisher = eventPublisher;
     }
 
     public async Task Handle(CancelSaleCommand request, CancellationToken cancellationToken)
@@ -29,5 +29,7 @@ public class CancelSaleCommandHandler : IRequestHandler<CancelSaleCommand>
 
         sale.Cancel();
         await _saleRepository.UpdateAsync(sale);
+
+        await _eventPublisher.PublishAsync("SaleCancelled", new { request.SaleId });
     }
 }

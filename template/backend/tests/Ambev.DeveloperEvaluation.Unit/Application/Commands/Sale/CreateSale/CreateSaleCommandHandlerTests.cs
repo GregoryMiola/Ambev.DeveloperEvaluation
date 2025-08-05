@@ -1,6 +1,7 @@
 using Ambev.DeveloperEvaluation.Application.Commands.SaleItems;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Dtos;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
@@ -17,6 +18,7 @@ public class CreateSaleCommandHandlerTests
     private readonly IProductRepository _productRepositoryMock;
     private readonly ISaleRepository _saleRepositoryMock;
     private readonly IMapper _mapperMock;
+    private readonly IEventPublisher _eventPublisherMock;
     private readonly CreateSaleCommandHandler _handler;
 
     public CreateSaleCommandHandlerTests()
@@ -28,13 +30,14 @@ public class CreateSaleCommandHandlerTests
         _productRepositoryMock = Substitute.For<IProductRepository>();
         _saleRepositoryMock = Substitute.For<ISaleRepository>();
         _mapperMock = Substitute.For<IMapper>();
-
+        _eventPublisherMock = Substitute.For<IEventPublisher>();
         // Instanciamos o handler que vamos testar, injetando os mocks.
         _handler = new CreateSaleCommandHandler(
             _userRepositoryMock,
             _productRepositoryMock,
             _saleRepositoryMock,
-            _mapperMock
+            _mapperMock,
+            _eventPublisherMock
         );
     }
 
@@ -45,12 +48,16 @@ public class CreateSaleCommandHandlerTests
         var command = new CreateSaleCommand(
             Guid.NewGuid(),
             Guid.NewGuid(),
-            new List<SaleItemCommand> { new() { ProductId = Guid.NewGuid(), Quantity = 5 } }
+            new List<SaleItemCommand> { new SaleItemCommand(Guid.NewGuid(), 5) }
         );
 
-        var userDto = new UserDto { Id = command.CustomerId, Name = "Test User" };
-        var productDto = new ProductDto { Id = command.Items.First().ProductId, Name = "Test Product", Price = 100m };
+        var userDto = new UserDto(command.CustomerId, "Test User");
+        var productDto = new ProductDto(command.Items.First().ProductId, "Test Product", 100m);
         
+        // Configuramos o comportamento dos mocks:
+        // "Quando FindByIdAsync for chamado com o ID do cliente do comando, retorne o userDto"
+
+
         // Configuramos o comportamento dos mocks:
         // "Quando FindByIdAsync for chamado com o ID do cliente do comando, retorne o userDto"
         _userRepositoryMock.FindByIdAsync(command.CustomerId).Returns(Task.FromResult<UserDto?>(userDto));
@@ -68,7 +75,10 @@ public class CreateSaleCommandHandlerTests
         
         // A verificação mais importante: garantimos que o método para salvar a venda foi chamado
         // exatamente uma vez. Isso prova que a orquestração do handler funcionou.
-        await _saleRepositoryMock.Received(1).AddAsync(Arg.Any<Sale>());
+        await _saleRepositoryMock.Received(1).AddAsync(Arg.Any<Sale>());// Verificamos também se o evento foi publicado.
+        
+        await _eventPublisherMock.Received(1).PublishAsync("SaleCreated", Arg.Any<SaleResponse>());
+    
     }
 
     [Fact]
@@ -78,7 +88,7 @@ public class CreateSaleCommandHandlerTests
         var command = new CreateSaleCommand(
             Guid.NewGuid(),
             Guid.NewGuid(),
-            new List<SaleItemCommand> { new() { ProductId = Guid.NewGuid(), Quantity = 5 } }
+            new List<SaleItemCommand> { new SaleItemCommand(Guid.NewGuid(), 5) }
         );
 
         // Configuramos o mock para simular o cenário de falha:

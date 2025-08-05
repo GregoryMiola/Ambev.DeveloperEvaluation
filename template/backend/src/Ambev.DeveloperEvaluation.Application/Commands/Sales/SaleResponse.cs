@@ -3,12 +3,12 @@ using Ambev.DeveloperEvaluation.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.Application.Commands.Sales;
 
-public class SaleResponse
+public record SaleResponse
 {
-    public Guid Id { get; set; }
-    public string SaleNumber { get; set; } = string.Empty;
-    public DateTime Date { get; set; }
-    public decimal TotalAmount { get; set; }
-    public bool IsCancelled { get; set; }
-    public List<SaleItemResponse> Items { get; set; } = new();
+    public Guid Id { get; init; }
+    public string SaleNumber { get; init; } = string.Empty;
+    public DateTime Date { get; init; }
+    public decimal TotalAmount { get; init; }
+    public bool IsCancelled { get; init; }
+    public List<SaleItemResponse> Items { get; init; } = new();
 }

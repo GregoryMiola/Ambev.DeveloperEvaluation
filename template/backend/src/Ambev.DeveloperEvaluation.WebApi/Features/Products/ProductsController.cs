@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Products;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/products")]
 public class ProductsController : ControllerBase
 {
     private readonly IProductRepository _productRepository;

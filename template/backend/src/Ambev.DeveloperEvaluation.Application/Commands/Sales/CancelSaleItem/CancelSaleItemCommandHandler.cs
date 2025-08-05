@@ -10,12 +10,12 @@ namespace Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSaleItem;
 public class CancelSaleItemCommandHandler : IRequestHandler<CancelSaleItemCommand>
 {
     private readonly ISaleRepository _saleRepository;
-    private readonly IMapper _mapper;
+    private readonly IEventPublisher _eventPublisher;
 
-    public CancelSaleItemCommandHandler(ISaleRepository saleRepository, IMapper mapper)
+    public CancelSaleItemCommandHandler(ISaleRepository saleRepository, IEventPublisher eventPublisher)
     {
         _saleRepository = saleRepository;
-        _mapper = mapper;
+        _eventPublisher = eventPublisher;
     }
 
     public async Task Handle(CancelSaleItemCommand request, CancellationToken cancellationToken)
@@ -29,5 +29,7 @@ public class CancelSaleItemCommandHandler : IRequestHandler<CancelSaleItemComman
         // A lógica de negócio é delegada para a entidade de domínio
         sale.RemoveItem(request.ItemId);
         await _saleRepository.UpdateAsync(sale);
+
+        await _eventPublisher.PublishAsync("ItemCancelled", new { request.SaleId, request.ItemId });
     }
 }
