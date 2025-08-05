@@ -1,6 +1,0 @@
-@Ambev.DeveloperEvaluation.Mocks_HostAddress = http://localhost:5079
-
-GET {{Ambev.DeveloperEvaluation.Mocks_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
