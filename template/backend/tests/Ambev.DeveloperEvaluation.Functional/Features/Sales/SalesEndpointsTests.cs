@@ -4,9 +4,10 @@ using Ambev.DeveloperEvaluation.Application.Commands.SaleItems;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CreateSale;
 using Ambev.DeveloperEvaluation.Application.Dtos;
-using Ambev.DeveloperEvaluation.Mocks.Repositories;
+using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Ambev.DeveloperEvaluation.Functional.Features.Sales;
@@ -14,19 +15,27 @@ namespace Ambev.DeveloperEvaluation.Functional.Features.Sales;
 public class SalesEndpointsTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly CustomWebApplicationFactory _factory;
 
     public SalesEndpointsTests(CustomWebApplicationFactory factory)
     {
-        _client = factory.CreateClient();
+        _factory = factory;
+        _client = _factory.CreateClient();
     }
 
     [Fact]
     public async Task CreateSale_WithValidData_ShouldReturnCreatedAndSaleData()
     {
         // Arrange
-        // Pegamos IDs de usuários e produtos que sabemos que existem nos nossos mocks.
-        var existingUser = new InMemoryUserRepository().GetAllAsync().Result.First();
-        var existingProduct = new InMemoryProductRepository().GetAllAsync().Result.First();
+        // To ensure we use the same in-memory data as the running application,
+        // we must get the repository instances from the factory's service provider.
+        // Creating `new InMemory...Repository()` here would create isolated instances
+        // with no data, causing the application to fail when looking up users/products.
+        await using var scope = _factory.Services.CreateAsyncScope();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
+        var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
+        var existingUser = (await userRepository.GetAllAsync()).First();
+        var existingProduct = (await productRepository.GetAllAsync()).First();
 
         var command = new CreateSaleCommand(
             existingUser.Id,

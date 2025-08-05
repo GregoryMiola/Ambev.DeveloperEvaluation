@@ -13,14 +13,16 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, SaleR
     private readonly IUserRepository _userRepository;
     private readonly IProductRepository _productRepository;
     private readonly ISaleRepository _saleRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IEventPublisher _eventPublisher;
 
-    public CreateSaleCommandHandler(IUserRepository userRepository, IProductRepository productRepository, ISaleRepository saleRepository, IMapper mapper, IEventPublisher eventPublisher)
+    public CreateSaleCommandHandler(IUserRepository userRepository, IProductRepository productRepository, ISaleRepository saleRepository, IUnitOfWork unitOfWork, IMapper mapper, IEventPublisher eventPublisher)
     {
         _userRepository = userRepository;
         _productRepository = productRepository;
         _saleRepository = saleRepository;
+        _unitOfWork = unitOfWork;
         _mapper = mapper;
         _eventPublisher = eventPublisher;
     }
@@ -57,6 +59,7 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, SaleR
         }
 
         await _saleRepository.AddAsync(sale);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         var saleResponse = _mapper.Map<SaleResponse>(sale);
 

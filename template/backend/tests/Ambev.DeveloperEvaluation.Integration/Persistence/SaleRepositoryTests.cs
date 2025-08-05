@@ -35,6 +35,9 @@ public class SaleRepositoryTests
         {
             var repository = new SaleRepository(context);
             await repository.AddAsync(sale);
+            // No padrão Unit of Work, o repositório apenas prepara as alterações.
+            // O teste precisa simular o "commit" da transação, que seria feito pelo UnitOfWork na camada de aplicação.
+            await context.SaveChangesAsync();
         }
 
         // Assert: Recupera a venda usando uma NOVA instância do contexto.

@@ -17,7 +17,6 @@ public class SaleRepository : ISaleRepository
     public async Task AddAsync(Sale sale)
     {
         await _context.Sales.AddAsync(sale);
-        await _context.SaveChangesAsync();
     }
 
     public async Task<Sale?> GetByIdAsync(Guid id)
@@ -45,6 +44,6 @@ public class SaleRepository : ISaleRepository
     public async Task UpdateAsync(Sale sale)
     {
         _context.Sales.Update(sale);
-        await _context.SaveChangesAsync();
+        await Task.CompletedTask; // Mantém a assinatura async, mas a responsabilidade de salvar foi removida.
     }
 }

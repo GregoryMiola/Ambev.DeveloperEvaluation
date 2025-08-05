@@ -20,6 +20,7 @@ public class CreateSaleCommandHandlerTests
     private readonly IMapper _mapperMock;
     private readonly IEventPublisher _eventPublisherMock;
     private readonly CreateSaleCommandHandler _handler;
+    private readonly IUnitOfWork _unitOfWork;
 
     public CreateSaleCommandHandlerTests()
     {
@@ -31,11 +32,13 @@ public class CreateSaleCommandHandlerTests
         _saleRepositoryMock = Substitute.For<ISaleRepository>();
         _mapperMock = Substitute.For<IMapper>();
         _eventPublisherMock = Substitute.For<IEventPublisher>();
+        _unitOfWork = Substitute.For<IUnitOfWork>();
         // Instanciamos o handler que vamos testar, injetando os mocks.
         _handler = new CreateSaleCommandHandler(
             _userRepositoryMock,
             _productRepositoryMock,
             _saleRepositoryMock,
+            _unitOfWork,
             _mapperMock,
             _eventPublisherMock
         );
