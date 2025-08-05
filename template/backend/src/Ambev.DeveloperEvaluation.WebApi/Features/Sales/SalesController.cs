@@ -1,7 +1,7 @@
 ﻿﻿using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CreateSale;
-using Ambev.DeveloperEvaluation.Application.Commands.Sales.GetSale;
-using Ambev.DeveloperEvaluation.Application.Commands.Sales.GetSales;
+using Ambev.DeveloperEvaluation.Application.Queries.Sales.GetSale;
+using Ambev.DeveloperEvaluation.Application.Queries.Sales.GetSales;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSaleItem;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
@@ -63,7 +63,7 @@ public class SalesController : BaseController
     {  
         try
         {
-            var saleResponse = await _mediator.Send(new GetSaleCommand(id));
+            var saleResponse = await _mediator.Send(new GetSaleQuery(id));
             if (saleResponse == null)
             {
                 return NotFound("Venda não encontrada.");
@@ -81,7 +81,7 @@ public class SalesController : BaseController
     [HttpGet]
     [ProducesResponseType(typeof(ApiResponseWithData<IEnumerable<SaleResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]   
-    public async Task<IActionResult> GetAllSales([FromQuery] GetSalesCommand command)
+    public async Task<IActionResult> GetAllSales([FromQuery] GetSalesQuery command)
     {
         try
         {
