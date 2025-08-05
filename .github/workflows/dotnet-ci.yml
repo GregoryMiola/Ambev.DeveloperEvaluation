@@ -28,10 +28,13 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore Ambev.DeveloperEvaluation.sln
+      run: dotnet restore 
+      working-directory: ./template/backend
 
     - name: Build solution
-      run: dotnet build Ambev.DeveloperEvaluation.sln --no-restore
+      run: dotnet build --no-restore
+      working-directory: ./template/backend
 
     - name: Run tests
-      run: dotnet test Ambev.DeveloperEvaluation.sln --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal
+      working-directory: ./template/backend
