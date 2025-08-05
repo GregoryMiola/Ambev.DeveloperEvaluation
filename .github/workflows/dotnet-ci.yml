@@ -16,7 +16,7 @@ jobs:
     # Isso simplifica os comandos, pois não precisamos repetir o caminho
     defaults:
       run:
-        working-directory: ./template/backend/src
+        working-directory: ./template/backend
 
     steps:
     - name: Checkout repository
@@ -28,13 +28,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore 
-      working-directory: ./template/backend
+      run: dotnet restore Ambev.DeveloperEvaluation.sln
 
     - name: Build solution
-      run: dotnet build --no-restore
-      working-directory: ./template/backend
+      run: dotnet build Ambev.DeveloperEvaluation.sln --no-restore
 
     - name: Run tests
-      run: dotnet test --no-build --verbosity normal
-      working-directory: ./template/backend
+      run: dotnet test Ambev.DeveloperEvaluation.sln --no-build --verbosity normal
