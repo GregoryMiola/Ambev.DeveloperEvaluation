@@ -1,0 +1,37 @@
+name: .NET Backend CI
+
+on:
+  # Dispara a pipeline em pushes para as branches dev e main
+  push:
+    branches: [ "main", "dev" ]
+  # Dispara a pipeline em Pull Requests que têm como alvo as branches dev e main
+  pull_request:
+    branches: [ "main", "dev" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    # Define o diretório de trabalho padrão para todos os comandos run
+    # Isso simplifica os comandos, pois não precisamos repetir o caminho
+    defaults:
+      run:
+        working-directory: ./template/backend
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore Ambev.DeveloperEvaluation.sln
+
+    - name: Build solution
+      run: dotnet build Ambev.DeveloperEvaluation.sln --no-restore
+
+    - name: Run tests
+      run: dotnet test Ambev.DeveloperEvaluation.sln --no-build --verbosity normal

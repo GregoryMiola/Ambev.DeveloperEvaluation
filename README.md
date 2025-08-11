@@ -11,6 +11,12 @@
 - The repository must provide instructions on how to configure, execute and test the project
 - Documentation and overall organization will also be taken into consideration
 
+## Running the Project
+For detailed instructions on how to set up the environment, run the application with Docker, and execute the test suite, please see the execution guide:
+
+**[➡️ How to Run and Test the Project](./template/backend/RUN.md)**
+
+
 ## Use Case
 **You are a developer on the DeveloperStore team. Now we need to implement the API prototypes.**
 

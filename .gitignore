@@ -188,6 +188,11 @@ publish/
 *.pubxml
 *.publishproj
 
+# User-specific settings files that should not be committed
+appsettings.*.json
+!appsettings.template.json
+
+
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
 # in these scripts will be unencrypted
@@ -362,3 +367,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Environment variables
+.env
