@@ -1,4 +1,3 @@
-using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
@@ -42,12 +41,7 @@ public class CreateSaleCommandHandler : IRequestHandler<CreateSaleCommand, SaleR
         // 3. Process each item
         foreach (var itemCommand in request.Items)
         {
-            var productDto = await _productRepository.FindByIdAsync(itemCommand.ProductId);
-            if (productDto == null)
-            {
-                throw new DomainException($"Produto com ID {itemCommand.ProductId} não encontrado.");
-            }
-
+            var productDto = await _productRepository.FindByIdAsync(itemCommand.ProductId) ?? throw new DomainException($"Produto com ID {itemCommand.ProductId} não encontrado.");
             var product = new Product
             {
                 Id = productDto.Id,

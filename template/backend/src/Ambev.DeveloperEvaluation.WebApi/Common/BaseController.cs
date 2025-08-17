@@ -1,6 +1,5 @@
 ﻿﻿using Ambev.DeveloperEvaluation.Common.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Common;
 

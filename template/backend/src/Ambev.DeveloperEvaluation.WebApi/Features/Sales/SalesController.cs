@@ -4,7 +4,6 @@ using Ambev.DeveloperEvaluation.Application.Queries.Sales.GetSale;
 using Ambev.DeveloperEvaluation.Application.Queries.Sales.GetSales;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSale;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSaleItem;
-using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using MediatR;
@@ -37,22 +36,10 @@ public class SalesController : BaseController
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateSale([FromBody] CreateSaleCommand command)
     {
-        try
-        {
-            var saleResponse = await _mediator.Send(command);
-            
-            return Created(nameof(GetSaleById), new { id = saleResponse.Id }, saleResponse);
-        }
-        catch (DomainException ex)
-        {
-            _logger.LogWarning("Falha na regra de negócio ao criar venda: {Message}", ex.Message);
-            return BadRequest(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Erro inesperado ao criar venda.");
-            return StatusCode(StatusCodes.Status500InternalServerError, new ApiResponse { Message = "Ocorreu um erro inesperado.", Success = false });
-        }
+       
+        var result = await _mediator.Send(command);
+
+        return CreatedAtAction(nameof(GetSaleById), new { id = result.Id }, new ApiResponseWithData<SaleResponse>(result, "Venda criada com sucesso."));
     }
     
     [HttpGet("{id:guid}", Name = "GetSaleById")]

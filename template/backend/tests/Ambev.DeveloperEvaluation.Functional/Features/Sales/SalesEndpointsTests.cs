@@ -1,9 +1,7 @@
-/*using System.Net;
+using System.Net;
 using System.Net.Http.Json;
-using Ambev.DeveloperEvaluation.Application.Commands.SaleItems;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Commands.Sales.CreateSale;
-using Ambev.DeveloperEvaluation.Application.Dtos;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using FluentAssertions;
@@ -13,7 +11,7 @@ using Xunit;
 namespace Ambev.DeveloperEvaluation.Functional.Features.Sales;
 
 public class SalesEndpointsTests : IClassFixture<CustomWebApplicationFactory>
-{/*
+{
     private readonly HttpClient _client;
     private readonly CustomWebApplicationFactory _factory;
 
@@ -40,7 +38,7 @@ public class SalesEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         var command = new CreateSaleCommand(
             existingUser.Id,
             Guid.NewGuid(), // BranchId pode ser qualquer um
-            new List<SaleItemCommand> { new SaleItemCommand(existingProduct.Id, 5) }
+            [new(existingProduct.Id, 5)]
         );
 
         // Act
@@ -65,4 +63,4 @@ public class SalesEndpointsTests : IClassFixture<CustomWebApplicationFactory>
         var expectedTotal = (existingProduct.Price * 5) * 0.9m; // 10% de desconto para 5 itens
         apiResponse.Data!.TotalAmount.Should().Be(expectedTotal);
     }
-}*/
+}

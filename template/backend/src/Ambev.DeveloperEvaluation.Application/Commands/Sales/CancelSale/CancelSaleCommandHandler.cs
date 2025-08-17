@@ -1,9 +1,6 @@
-using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Interfaces;
-using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Exceptions;
 using Ambev.DeveloperEvaluation.Domain.Interfaces;
-using AutoMapper;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Commands.Sales.CancelSale;

@@ -1,5 +1,4 @@
 using Ambev.DeveloperEvaluation.Application.Commands.SaleItems;
-using Ambev.DeveloperEvaluation.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.Application.Commands.Sales;
 
