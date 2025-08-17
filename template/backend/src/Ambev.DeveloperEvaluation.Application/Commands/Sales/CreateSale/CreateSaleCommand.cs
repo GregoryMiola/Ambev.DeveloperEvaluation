@@ -1,4 +1,3 @@
-using Ambev.DeveloperEvaluation.Application.Commands.Sales;
 using Ambev.DeveloperEvaluation.Application.Commands.SaleItems;
 using MediatR;
 

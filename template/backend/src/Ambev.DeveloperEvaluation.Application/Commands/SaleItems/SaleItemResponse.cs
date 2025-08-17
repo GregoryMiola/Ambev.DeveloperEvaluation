@@ -1,5 +1,3 @@
-using Ambev.DeveloperEvaluation.Domain.Entities;
-
 namespace Ambev.DeveloperEvaluation.Application.Commands.SaleItems;
 
 public record SaleItemResponse
